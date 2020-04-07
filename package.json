@@ -4,7 +4,8 @@
   "description": "Discord bot to save YouTube videos to playlists",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,8 @@
   },
   "homepage": "https://github.com/Th3Gavst3r/YooHoo#readme",
   "dependencies": {
-    "discord.js": "^12.1.1"
+    "discord.js": "^12.1.1",
+    "dotenv": "^8.2.0"
   },
   "prettier": {
     "singleQuote": true,
