@@ -1,0 +1,34 @@
+{
+  "name": "yoohoo",
+  "version": "1.0.0",
+  "description": "Discord bot to save YouTube videos to playlists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Th3Gavst3r/YooHoo.git"
+  },
+  "keywords": [
+    "discord",
+    "youtube",
+    "playlist",
+    "save"
+  ],
+  "author": "Th3Gavst3r",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Th3Gavst3r/YooHoo/issues"
+  },
+  "homepage": "https://github.com/Th3Gavst3r/YooHoo#readme",
+  "dependencies": {
+    "discord.js": "^12.1.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 2,
+    "semi": true,
+    "tabs": false
+  }
+}
