@@ -9,7 +9,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', (msg) => {
+client.on('message', msg => {
   const urls = msg.content.match(urlRegex);
   for (url of urls) {
     console.log(url);
