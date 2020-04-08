@@ -47,4 +47,25 @@ async function setTokens(authCode) {
   auth.setCredentials(tokens);
 }
 
-module.exports = { getConnectionUrl, setTokens };
+async function insertVideo(videoId, playlistId) {
+  const youtube = google.youtube({
+    version: 'v3',
+    auth: auth,
+  });
+
+  return youtube.playlistItems.insert({
+    part: 'snippet',
+    resource: {
+      snippet: {
+        playlistId,
+        position: 0,
+        resourceId: {
+          kind: 'youtube#video',
+          videoId,
+        },
+      },
+    },
+  });
+}
+
+module.exports = { getConnectionUrl, setTokens, insertVideo };

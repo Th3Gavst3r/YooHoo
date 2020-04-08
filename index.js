@@ -3,16 +3,16 @@ const PORT = process.env.PORT;
 
 require('./discord-handler');
 const express = require('express');
-const gsUtils = require('./google-utils');
+const googleUtils = require('./google-utils');
 
 const app = express();
 
 /**
  * Google OAuth landing pages
  */
-app.get('/', (req, res) => res.redirect(gsUtils.getConnectionUrl()));
+app.get('/', (req, res) => res.redirect(googleUtils.getConnectionUrl()));
 app.get('/callback', (req, res) => {
-  gsUtils.setTokens(req.query.code);
+  googleUtils.setTokens(req.query.code);
   res.send('hello user');
 });
 
