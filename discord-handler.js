@@ -21,6 +21,7 @@ client.on('message', msg => {
       const videoId = match[1];
       googleUtils
         .insertVideo(videoId, PLAYLIST_ID)
+        .then(() => msg.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
         .catch(err => console.error(err));
     }
   });
