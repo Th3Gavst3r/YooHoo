@@ -1,12 +1,12 @@
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const PORT = process.env.PORT;
+const APP_URL = process.env.APP_URL;
 
 const { google } = require('googleapis');
 const googleConfig = {
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
-  redirect: `http://127.0.0.1:${PORT}/callback`, // this must match your google api settings
+  redirect: `${APP_URL}/callback`, // this must match your google api settings
 };
 
 const auth = createConnection();
