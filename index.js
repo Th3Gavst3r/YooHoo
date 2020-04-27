@@ -13,7 +13,7 @@ const app = express();
 app.get('/', (req, res) => res.redirect(googleUtils.getConnectionUrl()));
 app.get('/callback', (req, res) => {
   googleUtils.setTokens(req.query.code);
-  res.send('hello user');
+  res.send('OAuth credentials accepted');
 });
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

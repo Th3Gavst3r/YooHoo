@@ -45,6 +45,7 @@ async function setTokens(authCode) {
   const data = await auth.getToken(authCode);
   const tokens = data.tokens;
   auth.setCredentials(tokens);
+  console.log('OAuth credentials accepted');
 }
 
 async function insertVideo(videoId, playlistId) {
