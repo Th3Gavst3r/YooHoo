@@ -29,4 +29,4 @@ client.on('message', msg => {
 
 client.login(TOKEN);
 
-exports.default = client;
+module.exports = client;
