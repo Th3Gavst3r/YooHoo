@@ -29,11 +29,12 @@ const defaultScope = ['https://www.googleapis.com/auth/youtube'];
 /**
  * Get a url which will open the google sign-in page and request access to the scope provided (such as calendar events).
  */
-function getConnectionUrl() {
+function getConnectionUrl(state) {
   return auth.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
     scope: defaultScope,
+    state: state,
   });
 }
 
