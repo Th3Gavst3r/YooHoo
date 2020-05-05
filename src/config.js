@@ -1,6 +1,7 @@
 require('dotenv').config();
 const APP_URL = process.env.APP_URL;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const PLAYLIST_ID = process.env.PLAYLIST_ID;
@@ -10,6 +11,9 @@ module.exports = {
   appUrl: APP_URL,
   discord: {
     token: DISCORD_TOKEN,
+  },
+  encryption: {
+    key: ENCRYPTION_KEY,
   },
   google: {
     clientId: GOOGLE_CLIENT_ID,

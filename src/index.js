@@ -1,4 +1,5 @@
 require('./discord-handler');
+const { encrypt } = require('./crypto');
 const db = require('./db');
 const express = require('express');
 const firebaseAdmin = require('firebase-admin');
@@ -55,6 +56,7 @@ app.get('/callback', async (req, res) => {
     playlistRef.set(
       {
         channels: firebaseAdmin.firestore.FieldValue.arrayUnion(channel),
+        credentials: encrypt(JSON.stringify(auth.credentials)),
       },
       { merge: true }
     );
