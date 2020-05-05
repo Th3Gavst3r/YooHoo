@@ -10,6 +10,7 @@ const commandFiles = fs
   .readdirSync('./src/commands')
   .filter(file => file.endsWith('.js'));
 
+// Initialize client with available command modules
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 for (const file of commandFiles) {
@@ -29,6 +30,8 @@ client.on('message', message => {
   if (message.author.bot) return;
 
   if (message.content.startsWith(prefix)) {
+    /* A bot command was invoked */
+    // Parse which command we received
     const args = message.content.slice(prefix.length + 1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command =
@@ -37,6 +40,7 @@ client.on('message', message => {
         cmd => cmd.aliases && cmd.aliases.includes(commandName)
       );
 
+    // Invalid command
     if (!command) {
       console.error(`Command not found: ${commandName}`);
       return errorReaction(message);
@@ -49,6 +53,7 @@ client.on('message', message => {
       return errorReaction(message); // DM error?
     }
   } else {
+    /* Parse normal messages for youtube videos */
     const words = message.content.split(/\s/);
     words.forEach(word => {
       const match = word.match(youtubeIdRegex);

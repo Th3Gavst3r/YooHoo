@@ -12,18 +12,21 @@ app.get('/', (req, res) => {
   if (!req.query.channel) return res.status(400).send('Missing channel');
   if (!req.query.playlist) return res.status(400).send('Missing playlist');
 
+  // Generate state to be sent through OAuth
   const state = {
     channel: req.query.channel,
     playlist: req.query.playlist,
   };
-
   const encodedState = Buffer.from(JSON.stringify(state)).toString('base64');
+
+  // Begin OAuth process
   res.redirect(googleUtils.getConnectionUrl(encodedState));
 });
 
 app.get('/callback', async (req, res) => {
   if (!req.query.code) res.status(400).send('Missing auth code');
 
+  // Validate received state
   const state = JSON.parse(
     Buffer.from(req.query.state, 'base64').toString('ascii')
   );
