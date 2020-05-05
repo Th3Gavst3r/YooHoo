@@ -17,4 +17,5 @@ module.exports = {
   },
   playlistId: PLAYLIST_ID,
   port: PORT,
+  prefix: 'yh',
 };
