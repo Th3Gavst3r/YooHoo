@@ -1,3 +1,4 @@
+const { errorReaction } = require('../util');
 const { prefix } = require('../config');
 
 module.exports = {
@@ -21,6 +22,8 @@ module.exports = {
       const command =
         commands.get(name) ||
         commands.find(c => c.aliases && c.aliases.includes(name));
+
+      if (!command) return errorReaction(message);
 
       data.push(`**Name:** ${command.name}`);
 

@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const playlistId = require('./config');
 const { token } = require('./config').discord;
+const { errorReaction } = require('./util');
 const fs = require('fs');
 const googleUtils = require('./google-utils');
 const { prefix } = require('./config');
@@ -38,12 +39,14 @@ client.on('message', message => {
 
     if (!command) {
       console.error(`Command not found: ${commandName}`);
+      return errorReaction(message);
     }
 
     try {
       command.execute(message, args);
     } catch (err) {
       console.error(err);
+      return errorReaction(message); // DM error?
     }
   } else {
     const words = message.content.split(/\s/);
