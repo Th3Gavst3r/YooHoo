@@ -1,5 +1,7 @@
 require('./discord-handler');
+const db = require('./db');
 const express = require('express');
+const firebaseAdmin = require('firebase-admin');
 const googleUtils = require('./google-utils');
 const { port } = require('./config');
 const youtube = require('./youtube');
@@ -48,9 +50,17 @@ app.get('/callback', async (req, res) => {
     const isOwner = playlists.map(p => p.id).includes(playlist);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
-    console.log('User is correctly authorized');
+    // Save playlist to db
+    const playlistRef = db.collection('playlists').doc(playlist);
+    playlistRef.set(
+      {
+        channels: firebaseAdmin.firestore.FieldValue.arrayUnion(channel),
+      },
+      { merge: true }
+    );
   } catch (err) {
-    return res.status(err.code).send(err.message);
+    console.error(err);
+    return res.status(err.code || 500).send(err.message);
   }
 
   return res.send('Playlist was registered successfully');
