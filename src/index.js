@@ -51,15 +51,14 @@ app.get('/callback', async (req, res) => {
     const isOwner = playlists.map(p => p.id).includes(playlist);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
-    // Save playlist to db
-    const playlistRef = db.collection('playlists').doc(playlist);
-    playlistRef.set(
-      {
-        channels: firebaseAdmin.firestore.FieldValue.arrayUnion(channel),
-        credentials: encrypt(JSON.stringify(auth.credentials)),
-      },
-      { merge: true }
-    );
+    // Save registration to db
+    const registration = {
+      channel: channel,
+      created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
+      credentials: encrypt(JSON.stringify(auth.credentials)),
+      playlist: playlist,
+    };
+    db.collection('registrations').add(registration);
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);
