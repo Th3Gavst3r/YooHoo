@@ -35,6 +35,13 @@ app.get('/callback', async (req, res) => {
 
   try {
     await googleUtils.setTokens(req.query.code);
+
+    // Check if user is authorized to edit this playlist
+    const playlists = await googleUtils.listUserPlaylists();
+    const isOwner = playlists.map(p => p.id).includes(state.playlist);
+    if (!isOwner) return res.status(401).send('User is not playlist owner');
+
+    console.log('User is correctly authorized');
   } catch (err) {
     return res.status(err.code).send(err.message);
   }

@@ -69,4 +69,32 @@ async function insertVideo(videoId, playlistId) {
   });
 }
 
-module.exports = { getConnectionUrl, setTokens, insertVideo };
+async function listUserPlaylists() {
+  const youtube = google.youtube({
+    version: 'v3',
+    auth: auth,
+  });
+
+  const playlists = [];
+
+  let res = undefined;
+  do {
+    res = await youtube.playlists.list({
+      part: 'id',
+      mine: true,
+      maxResults: 50,
+      pageToken: res && res.data.nextPageToken,
+    });
+
+    res.data.items.forEach(p => playlists.push(p));
+  } while (res.data.nextPageToken);
+
+  return playlists;
+}
+
+module.exports = {
+  getConnectionUrl,
+  setTokens,
+  insertVideo,
+  listUserPlaylists,
+};
