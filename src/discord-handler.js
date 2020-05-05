@@ -3,8 +3,8 @@ const playlistId = require('./config');
 const { token } = require('./config').discord;
 const { errorReaction } = require('./util');
 const fs = require('fs');
-const googleUtils = require('./google-utils');
 const { prefix } = require('./config');
+const youtube = require('./youtube');
 
 const commandFiles = fs
   .readdirSync('./src/commands')
@@ -59,8 +59,10 @@ client.on('message', message => {
       const match = word.match(youtubeIdRegex);
       if (match) {
         const videoId = match[1];
-        googleUtils
-          .insertVideo(videoId, playlistId)
+
+        // TODO: Grab auth credentials from db
+        youtube
+          .insertVideo(videoId, playlistId, undefined)
           .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
           .catch(err => console.error(err)); // DM registration author?
       }

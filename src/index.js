@@ -2,6 +2,7 @@ require('./discord-handler');
 const express = require('express');
 const googleUtils = require('./google-utils');
 const { port } = require('./config');
+const youtube = require('./youtube');
 
 const app = express();
 
@@ -39,11 +40,11 @@ app.get('/callback', async (req, res) => {
     await googleUtils.setTokens(req.query.code, auth);
 
     // Check that playlist exists
-    const playlistExists = await googleUtils.doesPlaylistExist(playlist, auth);
+    const playlistExists = await youtube.doesPlaylistExist(playlist, auth);
     if (!playlistExists) return res.status(404).send('Playlist does not exist');
 
     // Check if user is authorized to edit this playlist
-    const playlists = await googleUtils.listUserPlaylists(auth);
+    const playlists = await youtube.listUserPlaylists(auth);
     const isOwner = playlists.map(p => p.id).includes(playlist);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
