@@ -1,9 +1,7 @@
-require('dotenv').config();
-const PORT = process.env.PORT;
-
 require('./discord-handler');
 const express = require('express');
 const googleUtils = require('./google-utils');
+const { port } = require('./config');
 
 const app = express();
 
@@ -16,4 +14,4 @@ app.get('/callback', (req, res) => {
   res.send('OAuth credentials accepted');
 });
 
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+app.listen(port, () => console.log(`App listening on port ${port}`));

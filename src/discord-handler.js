@@ -1,7 +1,6 @@
-const TOKEN = process.env.DISCORD_TOKEN;
-const PLAYLIST_ID = process.env.PLAYLIST_ID;
-
 const Discord = require('discord.js');
+const playlistId = require('./config');
+const { token } = require('./config').discord;
 const googleUtils = require('./google-utils');
 const client = new Discord.Client();
 
@@ -20,13 +19,13 @@ client.on('message', msg => {
     if (match) {
       const videoId = match[1];
       googleUtils
-        .insertVideo(videoId, PLAYLIST_ID)
         .then(() => msg.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
         .catch(err => console.error(err));
     }
   });
+          .insertVideo(videoId, playlistId)
 });
 
-client.login(TOKEN);
+client.login(token);
 
 module.exports = client;

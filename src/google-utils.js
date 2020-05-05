@@ -1,12 +1,11 @@
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const APP_URL = process.env.APP_URL;
-
 const { google } = require('googleapis');
+const { appUrl } = require('./config');
+const { clientId, clientSecret } = require('./config').google;
+
 const googleConfig = {
-  clientId: CLIENT_ID,
-  clientSecret: CLIENT_SECRET,
-  redirect: `${APP_URL}/callback`, // this must match your google api settings
+  clientId: clientId,
+  clientSecret: clientSecret,
+  redirect: `${appUrl}/callback`, // this must match your google api settings
 };
 
 const auth = createConnection();
