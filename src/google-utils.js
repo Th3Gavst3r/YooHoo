@@ -92,9 +92,25 @@ async function listUserPlaylists() {
   return playlists;
 }
 
+async function doesPlaylistExist(playlistId) {
+  const youtube = google.youtube({
+    version: 'v3',
+    auth: auth,
+  });
+
+  const res = await youtube.playlists.list({
+    part: 'id',
+    id: playlistId,
+    maxResults: 1,
+  });
+
+  return res.data.items.length === 1;
+}
+
 module.exports = {
   getConnectionUrl,
   setTokens,
   insertVideo,
   listUserPlaylists,
+  doesPlaylistExist,
 };

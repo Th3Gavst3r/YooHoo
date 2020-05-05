@@ -32,13 +32,18 @@ app.get('/callback', async (req, res) => {
   );
   if (!state || !state.channel || !state.playlist)
     res.status(400).send('Invalid state');
+  const { playlist, channel } = state;
 
   try {
     await googleUtils.setTokens(req.query.code);
 
+    // Check that playlist exists
+    const playlistExists = await googleUtils.doesPlaylistExist(playlist);
+    if (!playlistExists) return res.status(404).send('Playlist does not exist');
+
     // Check if user is authorized to edit this playlist
     const playlists = await googleUtils.listUserPlaylists();
-    const isOwner = playlists.map(p => p.id).includes(state.playlist);
+    const isOwner = playlists.map(p => p.id).includes(playlist);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
     console.log('User is correctly authorized');
@@ -46,7 +51,7 @@ app.get('/callback', async (req, res) => {
     return res.status(err.code).send(err.message);
   }
 
-  return res.send('OAuth credentials accepted');
+  return res.send('Playlist was registered successfully');
 });
 
 app.listen(port, () => console.log(`App listening on port ${port}`));
