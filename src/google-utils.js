@@ -8,8 +8,6 @@ const googleConfig = {
   redirect: `${appUrl}/callback`, // this must match your google api settings
 };
 
-const auth = createConnection();
-
 /**
  * Create the google auth object which gives us access to talk to google's apis.
  */
@@ -30,6 +28,7 @@ const defaultScope = ['https://www.googleapis.com/auth/youtube'];
  * Get a url which will open the google sign-in page and request access to the scope provided (such as calendar events).
  */
 function getConnectionUrl(state) {
+  const auth = createConnection(); // No credentials required
   return auth.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
@@ -41,14 +40,13 @@ function getConnectionUrl(state) {
 /**
  * Exchange authCode for access and refresh tokens
  */
-async function setTokens(authCode) {
+async function setTokens(authCode, auth) {
   const data = await auth.getToken(authCode);
   const tokens = data.tokens;
   auth.setCredentials(tokens);
-  console.log('OAuth credentials accepted');
 }
 
-async function insertVideo(videoId, playlistId) {
+async function insertVideo(videoId, playlistId, auth) {
   const youtube = google.youtube({
     version: 'v3',
     auth: auth,
@@ -69,7 +67,7 @@ async function insertVideo(videoId, playlistId) {
   });
 }
 
-async function listUserPlaylists() {
+async function listUserPlaylists(auth) {
   const youtube = google.youtube({
     version: 'v3',
     auth: auth,
@@ -92,7 +90,7 @@ async function listUserPlaylists() {
   return playlists;
 }
 
-async function doesPlaylistExist(playlistId) {
+async function doesPlaylistExist(playlistId, auth) {
   const youtube = google.youtube({
     version: 'v3',
     auth: auth,
@@ -108,6 +106,7 @@ async function doesPlaylistExist(playlistId) {
 }
 
 module.exports = {
+  createConnection,
   getConnectionUrl,
   setTokens,
   insertVideo,

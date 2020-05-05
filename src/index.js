@@ -35,14 +35,15 @@ app.get('/callback', async (req, res) => {
   const { playlist, channel } = state;
 
   try {
-    await googleUtils.setTokens(req.query.code);
+    const auth = googleUtils.createConnection();
+    await googleUtils.setTokens(req.query.code, auth);
 
     // Check that playlist exists
-    const playlistExists = await googleUtils.doesPlaylistExist(playlist);
+    const playlistExists = await googleUtils.doesPlaylistExist(playlist, auth);
     if (!playlistExists) return res.status(404).send('Playlist does not exist');
 
     // Check if user is authorized to edit this playlist
-    const playlists = await googleUtils.listUserPlaylists();
+    const playlists = await googleUtils.listUserPlaylists(auth);
     const isOwner = playlists.map(p => p.id).includes(playlist);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
