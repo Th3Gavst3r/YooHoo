@@ -30,28 +30,7 @@ client.on('message', message => {
   if (message.author.bot) return;
 
   if (message.content.startsWith(prefix)) {
-    /* A bot command was invoked */
-    // Parse which command we received
-    const args = message.content.slice(prefix.length + 1).split(/ +/);
-    const commandName = args.shift().toLowerCase();
-    const command =
-      client.commands.get(commandName) ||
-      client.commands.find(
-        cmd => cmd.aliases && cmd.aliases.includes(commandName)
-      );
-
-    // Invalid command
-    if (!command) {
-      console.error(`Command not found: ${commandName}`);
-      return errorReaction(message);
-    }
-
-    try {
-      command.execute(message, args);
-    } catch (err) {
-      console.error(err);
-      return errorReaction(message); // DM error?
-    }
+    executeCommand(message);
   } else {
     /* Parse normal messages for youtube videos */
     const words = message.content.split(/\s/);
@@ -69,6 +48,30 @@ client.on('message', message => {
     });
   }
 });
+
+function executeCommand(message) {
+  // Parse which command we received
+  const args = message.content.slice(prefix.length + 1).split(/ +/);
+  const commandName = args.shift().toLowerCase();
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      cmd => cmd.aliases && cmd.aliases.includes(commandName)
+    );
+
+  // Invalid command
+  if (!command) {
+    console.error(`Command not found: ${commandName}`);
+    return errorReaction(message);
+  }
+
+  try {
+    command.execute(message, args);
+  } catch (err) {
+    console.error(err);
+    return errorReaction(message); // DM error?
+  }
+}
 
 client.login(token);
 
