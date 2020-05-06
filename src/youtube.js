@@ -6,6 +6,14 @@ async function insertVideo(videoId, playlistId, auth) {
     auth: auth,
   });
 
+  const playlistContainsVideo = await doesPlaylistContainVideo(
+    playlistId,
+    videoId,
+    auth
+  );
+
+  if (playlistContainsVideo) return;
+
   return youtube.playlistItems.insert({
     part: 'snippet',
     resource: {
@@ -59,4 +67,24 @@ async function doesPlaylistExist(playlistId, auth) {
   return res.data.items.length === 1;
 }
 
-module.exports = { insertVideo, listUserPlaylists, doesPlaylistExist };
+async function doesPlaylistContainVideo(playlistId, videoId, auth) {
+  const youtube = google.youtube({
+    version: 'v3',
+    auth: auth,
+  });
+
+  const res = await youtube.playlistItems.list({
+    part: 'id',
+    playlistId: playlistId,
+    videoId: videoId,
+  });
+
+  return res.items.length === 1;
+}
+
+module.exports = {
+  insertVideo,
+  listUserPlaylists,
+  doesPlaylistExist,
+  doesPlaylistContainVideo,
+};
