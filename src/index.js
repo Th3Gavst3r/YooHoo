@@ -15,11 +15,13 @@ const app = express();
 app.get('/', (req, res) => {
   if (!req.query.channel) return res.status(400).send('Missing channel');
   if (!req.query.playlist) return res.status(400).send('Missing playlist');
+  if (!req.query.user) return res.status(400).send('Missing user');
 
   // Generate state to be sent through OAuth
   const state = {
     channel: req.query.channel,
     playlist: req.query.playlist,
+    user: req.query.user,
   };
   const encodedState = Buffer.from(JSON.stringify(state)).toString('base64');
 
@@ -34,9 +36,9 @@ app.get('/callback', async (req, res) => {
   const state = JSON.parse(
     Buffer.from(req.query.state, 'base64').toString('ascii')
   );
-  if (!state || !state.channel || !state.playlist)
+  if (!state || !state.channel || !state.playlist || !state.user)
     res.status(400).send('Invalid state');
-  const { playlist, channel } = state;
+  const { playlist, channel, user } = state;
 
   try {
     const auth = googleUtils.createConnection();
@@ -57,6 +59,7 @@ app.get('/callback', async (req, res) => {
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
       credentials: encrypt(JSON.stringify(auth.credentials)),
       playlist: playlist,
+      user: user,
     };
 
     // Check if registration already exists

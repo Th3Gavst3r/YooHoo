@@ -12,11 +12,13 @@ module.exports = {
 
     const playlist = args[0];
     const channel = message.channel.id;
+    const user = message.author.id;
 
     // Generate request URL
     const url = new URL('/', appUrl);
     url.searchParams.append('channel', channel);
     url.searchParams.append('playlist', playlist);
+    url.searchParams.append('user', user);
 
     // Respond with Sign in button
     const embed = new Discord.MessageEmbed()
