@@ -15,7 +15,7 @@ module.exports = {
     const user = message.author.id;
 
     // Generate request URL
-    const url = new URL('/', appUrl);
+    const url = new URL('/register', appUrl);
     url.searchParams.append('channel', channel);
     url.searchParams.append('playlist', playlist);
     url.searchParams.append('user', user);

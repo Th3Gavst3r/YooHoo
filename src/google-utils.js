@@ -5,7 +5,7 @@ const { clientId, clientSecret } = require('./config').google;
 const googleConfig = {
   clientId: clientId,
   clientSecret: clientSecret,
-  redirect: `${appUrl}/callback`, // this must match your google api settings
+  redirect: `${appUrl}/register/callback`, // this must match your google api settings
 };
 
 /**
