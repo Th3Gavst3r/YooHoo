@@ -58,7 +58,21 @@ app.get('/callback', async (req, res) => {
       credentials: encrypt(JSON.stringify(auth.credentials)),
       playlist: playlist,
     };
-    db.collection('registrations').add(registration);
+
+    // Check if registration already exists
+    const registrationsRef = db.collection('registrations');
+    const snapshot = await registrationsRef
+      .where('playlist', '==', playlist)
+      .where('channel', '==', channel)
+      .get();
+
+    if (snapshot.size > 1) {
+      throw new Error('Error: Multiple existing registrations');
+    } else if (snapshot.empty) {
+      await registrationsRef.add(registration);
+    } else {
+      await registrationsRef.doc(snapshot.docs[0].id).set(registration);
+    }
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);
