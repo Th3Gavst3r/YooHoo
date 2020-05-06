@@ -53,11 +53,17 @@ router.get('/callback', async (req, res) => {
 
     // Save registration to db
     const registration = {
-      channel: channel,
+      channel: {
+        id: channel,
+      },
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
       credentials: encrypt(JSON.stringify(auth.credentials)),
-      playlist: playlist,
-      user: user,
+      playlist: {
+        id: playlist,
+      },
+      user: {
+        id: user,
+      },
     };
 
     // Check if registration already exists
