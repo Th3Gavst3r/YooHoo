@@ -19,4 +19,11 @@ async function setRegistration(registration) {
   }
 }
 
-module.exports = { setRegistration };
+function findRegistrationsByChannelId(channelId) {
+  return db
+    .collection('registrations')
+    .where('channel.id', '==', channelId)
+    .get();
+}
+
+module.exports = { setRegistration, findRegistrationsByChannelId };

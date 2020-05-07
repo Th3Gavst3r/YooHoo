@@ -1,8 +1,10 @@
+const db = require('./db');
+const { decrypt } = require('./crypto');
 const Discord = require('discord.js');
-const playlistId = require('./config');
 const { token } = require('./config').discord;
 const { errorReaction } = require('./util');
 const fs = require('fs');
+const googleUtils = require('./google-utils');
 const { prefix } = require('./config');
 const youtube = require('./youtube');
 
@@ -23,12 +25,17 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', message => {
+client.on('message', async message => {
   if (message.author.bot) return;
 
   if (message.content.startsWith(prefix)) {
     executeCommand(message);
   } else {
+    const channelId = message.channel.id;
+    const registrations = await db
+      .findRegistrationsByChannelId(channelId)
+      .then(snapshot => snapshot.docs.map(doc => doc.data()));
+
     /* Parse normal messages for youtube videos */
     const words = message.content.split(/\s/);
     words.forEach(word => {
@@ -36,11 +43,15 @@ client.on('message', message => {
       if (match) {
         const videoId = match[1];
 
-        // TODO: Grab auth credentials from db
-        youtube
-          .insertVideo(videoId, playlistId, undefined)
-          .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
-          .catch(err => console.error(err)); // DM registration author?
+        registrations.forEach(registration => {
+          const credentials = JSON.parse(decrypt(registration.credentials));
+          const auth = googleUtils.createConnection(credentials);
+
+          youtube
+            .insertVideo(videoId, registration.playlist.id, auth)
+            .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
+            .catch(err => console.error(err)); // DM registration author?
+        });
       }
     });
   }

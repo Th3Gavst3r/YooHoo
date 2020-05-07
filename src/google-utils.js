@@ -11,12 +11,14 @@ const googleConfig = {
 /**
  * Create the google auth object which gives us access to talk to google's apis.
  */
-function createConnection() {
-  return new google.auth.OAuth2(
+function createConnection(credentials) {
+  const auth = new google.auth.OAuth2(
     googleConfig.clientId,
     googleConfig.clientSecret,
     googleConfig.redirect
   );
+  if (credentials) auth.setCredentials(credentials);
+  return auth;
 }
 
 /**
