@@ -1,5 +1,12 @@
 const { google } = require('googleapis');
 
+function parseVideoId(text) {
+  // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
+  const youtubeIdRegex = /(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([\w\$\-+]*)/;
+
+  return youtubeIdRegex.exec(text);
+}
+
 async function insertVideo(videoId, playlistId, auth) {
   const youtube = google.youtube({
     version: 'v3',
@@ -87,4 +94,5 @@ module.exports = {
   listUserPlaylists,
   doesPlaylistExist,
   doesPlaylistContainVideo,
+  parseVideoId,
 };

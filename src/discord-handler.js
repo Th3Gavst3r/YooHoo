@@ -19,9 +19,6 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-// https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-const youtubeIdRegex = /.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?\s]*).*/;
-
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -35,7 +32,7 @@ client.on('message', message => {
     /* Parse normal messages for youtube videos */
     const words = message.content.split(/\s/);
     words.forEach(word => {
-      const match = word.match(youtubeIdRegex);
+      const match = youtube.parseVideoId(word);
       if (match) {
         const videoId = match[1];
 
