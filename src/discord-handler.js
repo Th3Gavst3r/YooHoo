@@ -41,14 +41,18 @@ client.on('message', async message => {
     const promises = [];
     videoIds.forEach(videoId => {
       registrations.forEach(registration => {
-        const credentials = JSON.parse(decrypt(registration.credentials));
-        const auth = googleUtils.createConnection(credentials);
+        try {
+          const credentials = JSON.parse(decrypt(registration.credentials));
+          const auth = googleUtils.createConnection(credentials);
 
-        promises.push(
-          youtube
-            .insertVideo(videoId, registration.playlist.id, auth)
-            .catch(err => console.error(err)) // DM registration author?
-        );
+          promises.push(
+            youtube
+              .insertVideo(videoId, registration.playlist.id, auth)
+              .catch(err => console.error(err)) // DM registration author?
+          );
+        } catch (err) {
+          console.error(err);
+        }
       });
     });
 
