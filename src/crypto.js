@@ -21,7 +21,7 @@ function decrypt(text) {
   const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
 
   let decrypted = decipher.update(encrypted);
-  decrypted = Buffer.concat(decrypted, decipher.final());
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
 
   return decrypted.toString();
 }
