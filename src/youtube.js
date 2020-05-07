@@ -90,7 +90,7 @@ async function doesPlaylistContainVideo(playlistId, videoId, auth) {
     videoId: videoId,
   });
 
-  return res.data.items.length === 1;
+  return res.data.items.length >= 1;
 }
 
 module.exports = {
