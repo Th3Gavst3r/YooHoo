@@ -23,6 +23,9 @@
     "url": "https://github.com/Th3Gavst3r/YooHoo/issues"
   },
   "homepage": "https://github.com/Th3Gavst3r/YooHoo#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "dependencies": {
     "@google-cloud/firestore": "^3.7.5",
     "discord.js": "^12.1.1",
