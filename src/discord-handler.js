@@ -37,22 +37,17 @@ client.on('message', async message => {
       .then(snapshot => snapshot.docs.map(doc => doc.data()));
 
     /* Parse normal messages for youtube videos */
-    const words = message.content.split(/\s/);
-    words.forEach(word => {
-      const match = youtube.parseVideoId(word);
-      if (match) {
-        const videoId = match[1];
+    const videoIds = youtube.parseVideoIds(message.content);
+    videoIds.forEach(videoId => {
+      registrations.forEach(registration => {
+        const credentials = JSON.parse(decrypt(registration.credentials));
+        const auth = googleUtils.createConnection(credentials);
 
-        registrations.forEach(registration => {
-          const credentials = JSON.parse(decrypt(registration.credentials));
-          const auth = googleUtils.createConnection(credentials);
-
-          youtube
-            .insertVideo(videoId, registration.playlist.id, auth)
-            .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
-            .catch(err => console.error(err)); // DM registration author?
-        });
-      }
+        youtube
+          .insertVideo(videoId, registration.playlist.id, auth)
+          .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
+          .catch(err => console.error(err)); // DM registration author?
+      });
     });
   }
 });
