@@ -28,7 +28,7 @@ client.on('ready', () => {
 client.on('message', async message => {
   if (message.author.bot) return;
 
-  if (message.content.startsWith(prefix)) {
+  if (message.content.startsWith(prefix + ' ')) {
     executeCommand(message);
   } else {
     const channelId = message.channel.id;
