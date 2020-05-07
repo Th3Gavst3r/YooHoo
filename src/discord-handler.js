@@ -38,17 +38,21 @@ client.on('message', async message => {
 
     /* Parse normal messages for youtube videos */
     const videoIds = youtube.parseVideoIds(message.content);
+    const promises = [];
     videoIds.forEach(videoId => {
       registrations.forEach(registration => {
         const credentials = JSON.parse(decrypt(registration.credentials));
         const auth = googleUtils.createConnection(credentials);
 
-        youtube
-          .insertVideo(videoId, registration.playlist.id, auth)
-          .then(() => message.react('▶️')) // to use a custom emoji, bot must be member of guild that owns it
-          .catch(err => console.error(err)); // DM registration author?
+        promises.push(
+          youtube
+            .insertVideo(videoId, registration.playlist.id, auth)
+            .catch(err => console.error(err)) // DM registration author?
+        );
       });
     });
+
+    Promise.all(promises).then(() => message.react('▶️')); // to use a custom emoji, bot must be member of guild that owns it
   }
 });
 
