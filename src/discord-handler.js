@@ -31,32 +31,34 @@ client.on('message', async message => {
   if (message.content.startsWith(prefix + ' ')) {
     executeCommand(message);
   } else {
-    const channelId = message.channel.id;
-    const registrations = await db
-      .findRegistrationsByChannelId(channelId)
-      .then(snapshot => snapshot.docs.map(doc => doc.data()));
-
     /* Parse normal messages for youtube videos */
     const videoIds = youtube.parseVideoIds(message.content);
-    const promises = [];
-    videoIds.forEach(videoId => {
-      registrations.forEach(registration => {
-        try {
-          const credentials = JSON.parse(decrypt(registration.credentials));
-          const auth = googleUtils.createConnection(credentials);
+    if (videoIds.length) {
+      const channelId = message.channel.id;
+      const registrations = await db
+        .findRegistrationsByChannelId(channelId)
+        .then(snapshot => snapshot.docs.map(doc => doc.data()));
 
-          promises.push(
-            youtube
-              .insertVideo(videoId, registration.playlist.id, auth)
-              .catch(err => console.error(err)) // DM registration author?
-          );
-        } catch (err) {
-          console.error(err);
-        }
+      const promises = [];
+      videoIds.forEach(videoId => {
+        registrations.forEach(registration => {
+          try {
+            const credentials = JSON.parse(decrypt(registration.credentials));
+            const auth = googleUtils.createConnection(credentials);
+
+            promises.push(
+              youtube
+                .insertVideo(videoId, registration.playlist.id, auth)
+                .catch(err => console.error(err)) // DM registration author?
+            );
+          } catch (err) {
+            console.error(err);
+          }
+        });
       });
-    });
 
-    Promise.all(promises).then(() => message.react('▶️')); // to use a custom emoji, bot must be member of guild that owns it
+      Promise.all(promises).then(() => message.react('▶️')); // to use a custom emoji, bot must be member of guild that owns it
+    }
   }
 });
 
