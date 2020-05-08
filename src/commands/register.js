@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { appUrl } = require('../config');
 const { errorReaction } = require('../util');
 
@@ -21,9 +21,7 @@ module.exports = {
     url.searchParams.append('user', user);
 
     // Respond with Sign in button
-    const embed = new Discord.MessageEmbed()
-      .setTitle('Sign in to YouTube')
-      .setURL(url);
+    const embed = new MessageEmbed().setTitle('Sign in to YouTube').setURL(url);
     message.reply(embed);
   },
 };
