@@ -11,7 +11,7 @@ function parseVideoIds(text) {
   return ids;
 }
 
-async function insertVideo(videoId, playlistId, auth) {
+async function insertVideo(videoId, playlistId, auth, position) {
   const youtube = google.youtube({
     version: 'v3',
     auth: auth,
@@ -30,7 +30,7 @@ async function insertVideo(videoId, playlistId, auth) {
     resource: {
       snippet: {
         playlistId,
-        position: 0,
+        position: position,
         resourceId: {
           kind: 'youtube#video',
           videoId,

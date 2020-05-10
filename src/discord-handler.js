@@ -48,7 +48,7 @@ client.on('message', async message => {
 
             promises.push(
               youtube
-                .insertVideo(videoId, registration.playlist.id, auth)
+                .insertVideo(videoId, registration.playlist.id, auth, 0)
                 .catch(err => console.error(err)) // DM registration author?
             );
           } catch (err) {
