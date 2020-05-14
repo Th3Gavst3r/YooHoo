@@ -7,7 +7,9 @@ module.exports = {
   description: `Register a playlist with the current channel`,
   aliases: ['r'],
   usage: '[options] [playlist id]',
-  options: [{ name: 'all', description: 'Scan for videos posted in the past' }],
+  options: [
+    { name: 'all', description: 'Include videos from past chat history' },
+  ],
   execute(message, args) {
     if (!args.length) return errorReaction(message);
 
