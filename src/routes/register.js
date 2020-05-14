@@ -31,15 +31,15 @@ router.get('/', (req, res) => {
 });
 
 router.get('/callback', async (req, res) => {
-  if (!req.query.code) res.status(400).send('Missing auth code');
+  if (!req.query.code) return res.status(400).send('Missing auth code');
 
   // Validate received state
   const state = JSON.parse(
     Buffer.from(req.query.state, 'base64').toString('ascii')
   );
   if (!state || !state.channel || !state.playlist || !state.user)
-    res.status(400).send('Invalid state');
   const { playlist, channel, user, all } = state;
+    return res.status(400).send('Invalid state');
 
   try {
     const auth = googleUtils.createConnection();
