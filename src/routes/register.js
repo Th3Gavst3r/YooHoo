@@ -85,44 +85,48 @@ router.get('/callback', async (req, res) => {
     await db.deleteSignup(signupId);
     res.send('Playlist was registered successfully');
 
-    if (all) {
-      let messages;
-      let oldestMessage;
-      do {
-        messages = await discordClient.channels.fetch(channel).then(channel =>
-          channel.messages.fetch({
-            before: oldestMessage && oldestMessage.id,
-            limit: 100,
-          })
-        );
-
-        // Save oldest for pagination
-        oldestMessage =
-          messages.size &&
-          messages.reduce((prev, curr) =>
-            prev.createdTimestamp < curr.createdTimestamp ? prev : curr
-          );
-
-        // Remove bot messages
-        messages = messages.filter(
-          m => !m.author.bot && !m.content.startsWith(prefix + ' ')
-        );
-
-        // Scan message buffer for videos
-        messages.forEach(message => {
-          videoIds = youtube.parseVideoIds(message.content);
-          videoIds.forEach(videoId => {
-            youtube
-              .insertVideo(videoId, playlist, auth)
-              .catch(err => console.error(err)); // DM registration author?
-          });
-        });
-      } while (messages.size);
-    }
+    if (all) saveVideosFromChatHistory(auth, channel, playlist);
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);
   }
 });
+
+async function saveVideosFromChatHistory(auth, channel, playlist) {
+  let messages;
+  let oldestMessage;
+  do {
+    messages = await discordClient.channels.fetch(channel).then(channel =>
+      channel.messages.fetch({
+        before: oldestMessage && oldestMessage.id,
+        limit: 100,
+      })
+    );
+
+    // Save oldest for pagination
+    oldestMessage =
+      messages.size &&
+      messages.reduce((prev, curr) =>
+        prev.createdTimestamp < curr.createdTimestamp ? prev : curr
+      );
+
+    // Remove bot messages
+    messages = messages.filter(
+      m => !m.author.bot && !m.content.startsWith(prefix + ' ')
+    );
+
+    // Scan message buffer for videos
+    // TODO: await batches
+    messages.forEach(message => {
+      videoIds = youtube.parseVideoIds(message.content);
+      if (videoIds) console.log(message.content);
+      videoIds.forEach(videoId => {
+        youtube
+          .insertVideo(videoId, playlist, auth)
+          .catch(err => console.error(err)); // DM registration author? Note: could just be a video 404
+      });
+    });
+  } while (messages.size);
+}
 
 module.exports = router;
