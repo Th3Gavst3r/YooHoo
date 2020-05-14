@@ -59,7 +59,7 @@ router.get('/callback', async (req, res) => {
     // Check that playlist exists
     const playlistExists = await youtube.doesPlaylistExist(playlist, auth);
     if (!playlistExists)
-      return res.status(404).send(`Playlist ${playlist} does not exist`);
+      return res.status(404).send(`Playlist ${playlist} not found`);
 
     // Check if user is authorized to edit this playlist
     const playlists = await youtube.listUserPlaylists(auth);
