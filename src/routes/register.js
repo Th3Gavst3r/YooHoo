@@ -12,17 +12,16 @@ const router = express.Router();
 /**
  * Google OAuth landing pages
  */
-router.get('/', (req, res) => {
-  if (!req.query.channel) return res.status(400).send('Missing channel');
-  if (!req.query.playlist) return res.status(400).send('Missing playlist');
-  if (!req.query.user) return res.status(400).send('Missing user');
+router.get('/', async (req, res) => {
+  if (!req.query.signupId) return res.status(400).send('Missing signup ID');
+
+  // Retrieve linked signup information
+  const signupDoc = await db.getSignup(req.query.signupId);
+  if (!signupDoc.exists) return res.status(400).send('Invalid signup ID');
 
   // Generate state to be sent through OAuth
   const state = {
-    channel: req.query.channel,
-    playlist: req.query.playlist,
-    user: req.query.user,
-    all: req.query.all,
+    signupId: req.query.signupId,
   };
   const encodedState = Buffer.from(JSON.stringify(state)).toString('base64');
 
@@ -37,9 +36,21 @@ router.get('/callback', async (req, res) => {
   const state = JSON.parse(
     Buffer.from(req.query.state, 'base64').toString('ascii')
   );
-  if (!state || !state.channel || !state.playlist || !state.user)
-  const { playlist, channel, user, all } = state;
-    return res.status(400).send('Invalid state');
+  if (!state || !state.signupId) return res.status(400).send('Invalid state');
+
+  // Retrieve linked signup information
+  const signupDoc = await db.getSignup(state.signupId);
+  if (!signupDoc.exists) return res.status(400).send('Invalid signup ID');
+  const signup = signupDoc.data();
+
+  // Validate signup
+  if (!signup.channel || !signup.playlist || !signup.user)
+    return res.status(500).send('Incomplete signup information');
+  const signupId = signupDoc.id;
+  const channel = signup.channel.id;
+  const playlist = signup.playlist.id;
+  const user = signup.user.id;
+  const all = signup.all;
 
   try {
     const auth = googleUtils.createConnection();
@@ -69,11 +80,12 @@ router.get('/callback', async (req, res) => {
         id: user,
       },
     };
-    await db.setRegistration(registration);
+    await db.addRegistration(registration);
 
+    await db.deleteSignup(signupId);
     res.send('Playlist was registered successfully');
 
-    if (all === 'true') {
+    if (all) {
       let messages;
       let oldestMessage;
       do {

@@ -36,7 +36,7 @@ client.on('message', async message => {
     if (videoIds.length) {
       const channelId = message.channel.id;
       const registrations = await db
-        .findRegistrationsByChannelId(channelId)
+        .getRegistrationsByChannelId(channelId)
         .then(snapshot => snapshot.docs.map(doc => doc.data()));
 
       const promises = [];

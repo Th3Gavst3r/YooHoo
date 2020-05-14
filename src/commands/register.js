@@ -1,6 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 const { appUrl } = require('../config');
+const db = require('../db');
 const { errorReaction } = require('../util');
+const firebaseAdmin = require('firebase-admin');
 
 module.exports = {
   name: 'register',
@@ -10,19 +12,35 @@ module.exports = {
   options: [
     { name: 'all', description: 'Include videos from past chat history' },
   ],
-  execute(message, args) {
+  async execute(message, args) {
     if (!args.length) return errorReaction(message);
 
     const playlist = args.slice(-1)[0];
     const channel = message.channel.id;
     const user = message.author.id;
+    const all = args.includes('all');
+
+    if (!playlist) return errorReaction(message);
+
+    const signup = {
+      all: all,
+      channel: {
+        id: channel,
+      },
+      created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
+      playlist: {
+        id: playlist,
+      },
+      user: {
+        id: user,
+      },
+    };
+
+    const signupDoc = await db.addSignup(signup);
 
     // Generate request URL
     const url = new URL('/register', appUrl);
-    url.searchParams.append('channel', channel);
-    url.searchParams.append('playlist', playlist);
-    url.searchParams.append('user', user);
-    if (args.includes('all')) url.searchParams.append('all', true);
+    url.searchParams.append('signupId', signupDoc.id);
 
     // Respond with Sign in button
     const embed = new MessageEmbed().setTitle('Sign in to YouTube').setURL(url);
