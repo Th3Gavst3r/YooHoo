@@ -16,23 +16,16 @@ module.exports = {
     if (!args.length) return errorReaction(message);
 
     const playlist = args.slice(-1)[0];
-    const channel = message.channel.id;
-    const user = message.author.id;
     const all = args.includes('all');
-
     if (!playlist) return errorReaction(message);
 
     const signup = {
       all: all,
-      channel: {
-        id: channel,
-      },
+      author: JSON.parse(JSON.stringify(message.author)),
+      channel: JSON.parse(JSON.stringify(message.channel)),
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
       playlist: {
         id: playlist,
-      },
-      user: {
-        id: user,
       },
     };
 

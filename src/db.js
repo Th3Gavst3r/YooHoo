@@ -6,8 +6,8 @@ async function addRegistration(registration) {
 
   // Check if registration already exists
   const snapshot = await registrationsRef
-    .where('playlist', '==', registration.playlist)
-    .where('channel', '==', registration.channel)
+    .where('playlist.id', '==', registration.playlist.id)
+    .where('channel.id', '==', registration.channel.id)
     .get();
 
   if (snapshot.size > 1) {

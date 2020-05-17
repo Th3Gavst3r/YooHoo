@@ -44,48 +44,41 @@ router.get('/callback', async (req, res) => {
   const signup = signupDoc.data();
 
   // Validate signup
-  if (!signup.channel || !signup.playlist || !signup.user)
+  if (!signup.channel || !signup.playlist || !signup.author)
     return res.status(500).send('Incomplete signup information');
-  const signupId = signupDoc.id;
-  const channel = signup.channel.id;
-  const playlist = signup.playlist.id;
-  const user = signup.user.id;
-  const all = signup.all;
 
   try {
     const auth = googleUtils.createConnection();
     await googleUtils.setTokens(req.query.code, auth);
 
     // Check that playlist exists
-    const playlistExists = await youtube.doesPlaylistExist(playlist, auth);
+    const playlistExists = await youtube.doesPlaylistExist(
+      signup.playlist.id,
+      auth
+    );
     if (!playlistExists)
-      return res.status(404).send(`Playlist ${playlist} not found`);
+      return res.status(404).send(`Playlist ${signup.playlist.id} not found`);
 
     // Check if user is authorized to edit this playlist
     const playlists = await youtube.listUserPlaylists(auth);
-    const isOwner = playlists.map(p => p.id).includes(playlist);
+    const isOwner = playlists.map(p => p.id).includes(signup.playlist.id);
     if (!isOwner) return res.status(401).send('User is not playlist owner');
 
     // Save registration to db
     const registration = {
-      channel: {
-        id: channel,
-      },
+      author: signup.author,
+      channel: signup.channel,
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
       credentials: encrypt(JSON.stringify(auth.credentials)),
-      playlist: {
-        id: playlist,
-      },
-      user: {
-        id: user,
-      },
+      playlist: signup.playlist,
     };
     await db.addRegistration(registration);
 
-    await db.deleteSignup(signupId);
+    await db.deleteSignup(signupDoc.id);
     res.send('Playlist was registered successfully');
 
-    if (all) saveVideosFromChatHistory(auth, channel, playlist);
+    if (signup.all)
+      saveVideosFromChatHistory(auth, signup.channel.id, signup.playlist.id);
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);
@@ -119,7 +112,6 @@ async function saveVideosFromChatHistory(auth, channel, playlist) {
     // TODO: await batches
     messages.forEach(message => {
       videoIds = youtube.parseVideoIds(message.content);
-      if (videoIds) console.log(message.content);
       videoIds.forEach(videoId => {
         youtube
           .insertVideo(videoId, playlist, auth)
