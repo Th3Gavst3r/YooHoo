@@ -30,7 +30,10 @@ client.on('ready', () => {
 client.on('message', async message => {
   if (message.author.bot) return;
 
-  if (message.content.startsWith(prefix + ' ')) {
+  if (
+    message.content.startsWith(prefix + ' ') ||
+    message.content.match(new RegExp(`^<@!?${client.user.id}>`)) // Bot was mentioned
+  ) {
     executeCommand(message);
   } else {
     /* Parse normal messages for youtube videos */
@@ -66,7 +69,7 @@ client.on('message', async message => {
 
 function executeCommand(message) {
   // Parse which command we received
-  const args = message.content.slice(prefix.length + 1).split(/ +/);
+  const args = message.content.split(/ +/).slice(1);
   const commandName = args.shift().toLowerCase();
   const command =
     client.commands.get(commandName) ||
