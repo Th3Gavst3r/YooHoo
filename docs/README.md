@@ -15,3 +15,7 @@ A Discord bot which saves posted YouTube videos to playlists.
 | **`yh help`**                         | Get help with bot commands                   |
 | **`yh invite`**                       | Get a link to invite YooHoo to your server   |
 | **`yh register (all) <playlist id>`** | Register a playlist with the current channel |
+
+## Contributing
+
+[Join the community Discord server](https://discord.gg/g9BKJR2)

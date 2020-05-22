@@ -1,3 +1,4 @@
+const { supportServerUrl } = require('../config');
 const client = require('../discord-handler');
 const { errorReaction } = require('../util');
 const { prefix } = require('../config');
@@ -30,7 +31,10 @@ module.exports = {
           'All commands',
           commands.map(cmd => `\`${cmd.name}\``).join(', ')
         )
-        .addField('Links', `[Invite](${getInviteUrl()})`);
+        .addField(
+          'Links',
+          `[Invite](${getInviteUrl()}) | [Support Server](${supportServerUrl})`
+        );
       return message.channel.send(embed);
     } else {
       /* List detailed usage for a specific command */

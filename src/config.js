@@ -24,4 +24,5 @@ module.exports = {
   playlistId: PLAYLIST_ID,
   port: PORT,
   prefix: 'yh',
+  supportServerUrl: 'https://discord.gg/g9BKJR2',
 };
