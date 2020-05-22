@@ -7,6 +7,18 @@ module.exports = {
   aliases: ['i'],
   usage: '',
   execute(message, args) {
+    const url = this.getInviteUrl();
+
+    // Respond with invite
+    const embed = new MessageEmbed()
+      .setTitle('Add YooHoo to your server')
+      .setColor('#ff0000')
+      .setURL(url);
+
+    message.channel.send(embed);
+  },
+
+  getInviteUrl: () => {
     const permissions = new Permissions([
       'ADD_REACTIONS',
       'VIEW_CHANNEL',
@@ -19,11 +31,6 @@ module.exports = {
     url.searchParams.append('client_id', clientId);
     url.searchParams.append('permissions', permissions.bitfield);
     url.searchParams.append('scope', 'bot');
-
-    // Respond with invite
-    const embed = new MessageEmbed()
-      .setTitle('Add YooHoo to your server')
-      .setURL(url);
-    message.reply(embed);
+    return url;
   },
 };

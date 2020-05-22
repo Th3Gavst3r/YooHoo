@@ -1,5 +1,8 @@
+const client = require('../discord-handler');
 const { errorReaction } = require('../util');
 const { prefix } = require('../config');
+const { getInviteUrl } = require('./invite');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
   name: 'help',
@@ -7,18 +10,28 @@ module.exports = {
   description: `List information about YooHoo's commands`,
   usage: '[command name]',
   execute(message, args) {
-    const data = [];
     const { commands } = message.client;
 
     if (!args.length) {
       /* List all available commands */
-      data.push('All commands');
-      data.push(commands.map(cmd => `\`${cmd.name}\``).join(', '));
-      data.push(
-        `\nSend \`${prefix} help [command name]\` to get info for a specific command`
-      );
-
-      return message.reply(data, { split: true });
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setAuthor(
+          client.user.username,
+          undefined,
+          'https://github.com/Th3Gavst3r/YooHoo'
+        )
+        .setThumbnail(client.user.avatarURL())
+        .setURL('https://github.com/Th3Gavst3r/YooHoo')
+        .setDescription(
+          `A bot which saves posted YouTube videos to your playlists\nSend \`${prefix} help [command name]\` to get info for a specific command`
+        )
+        .addField(
+          'All commands',
+          commands.map(cmd => `\`${cmd.name}\``).join(', ')
+        )
+        .addField('Links', `[Invite](${getInviteUrl()})`);
+      return message.channel.send(embed);
     } else {
       /* List detailed usage for a specific command */
       const name = args[0].toLowerCase();
@@ -28,23 +41,29 @@ module.exports = {
 
       if (!command) return errorReaction(message);
 
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setTitle(`\`${command.name}\``);
+
       // Populate metadata fields
-      data.push(`**Name:** ${command.name}`);
-
+      if (command.description) embed.setDescription(command.description);
       if (command.aliases)
-        data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-      if (command.description)
-        data.push(`**Description:** ${command.description}`);
-      if (command.usage)
-        data.push(`**Usage:** \`${prefix} ${command.name} ${command.usage}\``);
-      if (command.options) {
-        data.push(`**Options:**`);
-        command.options.forEach(option =>
-          data.push(`\t\`${option.name}\`: ${option.description}`)
+        embed.addField(
+          'Aliases',
+          command.aliases.map(a => `\`${a}\``).join(', ')
         );
-      }
+      if (command.usage)
+        embed.addField(
+          'Usage',
+          `\`${prefix} ${command.name} ${command.usage}\``
+        );
+      if (command.options)
+        embed.addField(
+          'Options',
+          command.options.map(o => `\`${o.name}\`: ${o.description}`)
+        );
 
-      message.channel.send(data, { split: true });
+      message.channel.send(embed);
     }
   },
 };

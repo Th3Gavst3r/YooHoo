@@ -12,8 +12,10 @@ const commandFiles = fs
   .readdirSync('./src/commands')
   .filter(file => file.endsWith('.js'));
 
-// Initialize client with available command modules
 const client = new Discord.Client();
+module.exports = client;
+
+// Initialize client with available command modules
 client.commands = new Discord.Collection();
 for (const file of commandFiles) {
   console.log(`Registering command: ${file}`);
@@ -87,5 +89,3 @@ function executeCommand(message) {
 }
 
 client.login(token);
-
-module.exports = client;
