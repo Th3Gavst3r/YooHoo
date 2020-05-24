@@ -11,8 +11,8 @@ module.exports = {
 
     // Respond with invite
     const embed = new MessageEmbed()
-      .setTitle('Add YooHoo to your server')
       .setColor('#ff0000')
+      .setTitle('Add YooHoo to your server')
       .setURL(url);
 
     message.channel.send(embed);

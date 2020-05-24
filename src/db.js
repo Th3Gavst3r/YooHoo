@@ -1,14 +1,15 @@
 const Firestore = require('@google-cloud/firestore');
 const db = new Firestore();
 
-async function addRegistration(registration) {
-  const registrationsRef = db.collection('registrations');
+const registrationsRef = db.collection('registrations');
+const signupsRef = db.collection('signups');
 
+async function addRegistration(registration) {
   // Check if registration already exists
-  const snapshot = await registrationsRef
-    .where('playlist.id', '==', registration.playlist.id)
-    .where('channel.id', '==', registration.channel.id)
-    .get();
+  const snapshot = await getRegistrationsByChannelIdAndPlaylistId(
+    registration.channel.id,
+    registration.playlist.id
+  );
 
   if (snapshot.size > 1) {
     throw new Error('Error: Multiple existing registrations');
@@ -20,27 +21,50 @@ async function addRegistration(registration) {
 }
 
 function getRegistrationsByChannelId(channelId) {
-  return db
-    .collection('registrations')
+  return registrationsRef.where('channel.id', '==', channelId).get();
+}
+
+function getRegistrationsByChannelIdAndPlaylistId(channelId, playlistId) {
+  return registrationsRef
     .where('channel.id', '==', channelId)
+    .where('playlist.id', '==', playlistId)
     .get();
 }
 
+function getRegistrationsByChannelIdAndPlaylistIdAndAuthorId(
+  channelId,
+  playlistId,
+  authorId
+) {
+  return registrationsRef
+    .where('channel.id', '==', channelId)
+    .where('playlist.id', '==', playlistId)
+    .where('author.id', '==', authorId)
+    .get();
+}
+
+function deleteRegistration(registrationId) {
+  return registrationsRef.doc(registrationId).delete();
+}
+
 function addSignup(signup) {
-  return db.collection('signups').add(signup);
+  return signupsRef.add(signup);
 }
 
 function getSignup(signupId) {
-  return db.collection('signups').doc(signupId).get();
+  return signupsRef.doc(signupId).get();
 }
 
 function deleteSignup(signupId) {
-  return db.collection('signups').doc(signupId).delete();
+  return signupsRef.doc(signupId).delete();
 }
 
 module.exports = {
   addRegistration,
   getRegistrationsByChannelId,
+  getRegistrationsByChannelIdAndPlaylistId,
+  getRegistrationsByChannelIdAndPlaylistIdAndAuthorId,
+  deleteRegistration,
   addSignup,
   getSignup,
   deleteSignup,
