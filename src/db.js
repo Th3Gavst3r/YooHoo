@@ -16,6 +16,7 @@ async function addRegistration(registration) {
   } else if (snapshot.empty) {
     return registrationsRef.add(registration);
   } else {
+    console.log(`Overwriting existing registration: ${snapshot.docs[0].id}`);
     return registrationsRef.doc(snapshot.docs[0].id).set(registration);
   }
 }

@@ -13,6 +13,10 @@ module.exports = {
   execute(message, args) {
     const { commands } = message.client;
 
+    console.log(
+      `User ${message.author.tag} (${message.author.id}) asked for help in channel ${message.channel.id}`
+    );
+
     if (!args.length) {
       /* List all available commands */
       const embed = new MessageEmbed()

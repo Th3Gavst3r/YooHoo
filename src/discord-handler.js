@@ -40,14 +40,24 @@ client.on('message', async message => {
     /* Parse normal messages for youtube videos */
     const videoIds = youtube.parseVideoIds(message.content);
     if (videoIds.length) {
+      console.log(`Received message with videos: ${JSON.stringify(videoIds)}`);
       const channelId = message.channel.id;
       const registrations = await db
         .getRegistrationsByChannelId(channelId)
         .then(snapshot => snapshot.docs.map(doc => doc.data()));
 
+      console.log(
+        `Registrations for channel ${message.channel.id}: ${JSON.stringify(
+          registrations
+        )}`
+      );
+
       const promises = [];
       videoIds.forEach(videoId => {
         registrations.forEach(registration => {
+          console.log(
+            `Saving video ${videoId} to playlist ${registration.playlist.id}`
+          );
           try {
             const credentials = JSON.parse(decrypt(registration.credentials));
             const auth = googleUtils.createConnection(credentials);

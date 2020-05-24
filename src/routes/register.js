@@ -17,7 +17,10 @@ router.get('/', async (req, res) => {
 
   // Retrieve linked signup information
   const signupDoc = await db.getSignup(req.query.signupId);
-  if (!signupDoc.exists) return res.status(400).send('Invalid signup ID');
+  if (!signupDoc.exists) {
+    console.log(`Requested signupId ${req.query.signupId} does not exist`);
+    return res.status(400).send('Invalid signup ID');
+  }
 
   // Generate state to be sent through OAuth
   const state = {
@@ -36,16 +39,25 @@ router.get('/callback', async (req, res) => {
   const state = JSON.parse(
     Buffer.from(req.query.state, 'base64').toString('ascii')
   );
-  if (!state || !state.signupId) return res.status(400).send('Invalid state');
+  if (!state || !state.signupId) {
+    console.log(`Callback received invalid state: ${req.query.state}`);
+    return res.status(400).send('Invalid state');
+  }
 
   // Retrieve linked signup information
   const signupDoc = await db.getSignup(state.signupId);
-  if (!signupDoc.exists) return res.status(400).send('Invalid signup ID');
+  if (!signupDoc.exists) {
+    console.log(`Requested signupId ${req.query.signupId} does not exist`);
+    return res.status(400).send('Invalid signup ID');
+  }
   const signup = signupDoc.data();
+  console.log(`Creating registration for signupId: ${signupDoc.id}`);
 
   // Validate signup
-  if (!signup.channel || !signup.playlist || !signup.author)
-    return res.status(500).send('Incomplete signup information');
+  if (!signup.channel || !signup.playlist || !signup.author) {
+    console.error(`Malformed signup: ${signup}`);
+    return res.status(500).send('Malformed signup');
+  }
 
   try {
     const auth = googleUtils.createConnection();
@@ -56,13 +68,22 @@ router.get('/callback', async (req, res) => {
       signup.playlist.id,
       auth
     );
-    if (!playlistExists)
+    if (!playlistExists) {
+      console.log(
+        `User ${signup.user.id} registered nonexitent playlist: ${signup.playlist.id}`
+      );
       return res.status(404).send(`Playlist ${signup.playlist.id} not found`);
+    }
 
     // Check if user is authorized to edit this playlist
     const playlists = await youtube.listUserPlaylists(auth);
     const isOwner = playlists.map(p => p.id).includes(signup.playlist.id);
-    if (!isOwner) return res.status(401).send('User is not playlist owner');
+    if (!isOwner) {
+      console.log(
+        `User ${signup.author.tag} does not own playlist ${signup.playlist.id}`
+      );
+      return res.status(401).send('User is not playlist owner');
+    }
 
     // Save registration to db
     const registration = {
@@ -74,11 +95,14 @@ router.get('/callback', async (req, res) => {
     };
     await db.addRegistration(registration);
 
+    console.log(`Deleting signup ${signupDoc.id}`);
     await db.deleteSignup(signupDoc.id);
     res.send('Playlist was registered successfully');
 
-    if (signup.all)
+    if (signup.all) {
+      console.log('Parsing chat history for videos');
       saveVideosFromChatHistory(auth, signup.channel.id, signup.playlist.id);
+    }
   } catch (err) {
     console.error(err);
     return res.status(err.code || 500).send(err.message);

@@ -20,6 +20,9 @@ module.exports = {
     const all = args.includes('all');
     if (!playlist) return errorReaction(message);
 
+    console.log(
+      `Registration initiated by ${message.author.tag} (${message.author.id}). Channel: ${message.channel.id} Playlist: ${playlist}`
+    );
     const signup = {
       all: all,
       author: JSON.parse(JSON.stringify(message.author)),
@@ -42,6 +45,7 @@ module.exports = {
       .setTitle('Sign in to YouTube')
       .setURL(url);
 
+    console.log(`Sending signup url: ${url}`);
     message.author.send(embed).catch(err => {
       if (err.code === APIErrors.CANNOT_MESSAGE_USER) {
         message.channel.send(embed);

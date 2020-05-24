@@ -13,6 +13,10 @@ module.exports = {
 
     const playlist = args.slice(-1)[0];
 
+    console.log(
+      `Deregistration initiated by ${message.author.tag} (${message.author.id}). Channel: ${message.channel.id} Playlist: ${playlist}`
+    );
+
     const snapshot = await db.getRegistrationsByChannelIdAndPlaylistIdAndAuthorId(
       message.channel.id,
       playlist,
@@ -22,9 +26,13 @@ module.exports = {
     if (snapshot.size > 1) {
       throw new Error('Error: Multiple existing registrations');
     } else if (snapshot.empty) {
+      console.log(
+        `No registration found for user: ${message.author.tag} (${message.author.id}) channel: ${message.channel.id} playlist: ${playlist}`
+      );
       return;
     } else {
       const registration = snapshot.docs[0];
+      console.log(`Deleting registration: ${registration.id}`);
       await db.deleteRegistration(registration.id);
 
       const location =

@@ -7,6 +7,9 @@ module.exports = {
   aliases: ['i'],
   usage: '',
   execute(message, args) {
+    console.log(
+      `User ${message.author.tag} (${message.author.id}) requested an invite in channel ${message.channel.id}`
+    );
     const url = this.getInviteUrl();
 
     // Respond with invite
@@ -15,6 +18,7 @@ module.exports = {
       .setTitle('Add YooHoo to your server')
       .setURL(url);
 
+    console.log(`Responding with invite url: ${url}`);
     message.channel.send(embed);
   },
 

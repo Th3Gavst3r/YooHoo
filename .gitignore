@@ -1,6 +1,6 @@
 node_modules
-.env
 
 # deployment secrets
+.env
 yoohoo*.json
 app.yaml
