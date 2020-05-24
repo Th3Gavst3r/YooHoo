@@ -1,3 +1,4 @@
+const { APIErrors } = require('discord.js').Constants;
 const { MessageEmbed } = require('discord.js');
 const { appUrl } = require('../config');
 const db = require('../db');
@@ -36,7 +37,15 @@ module.exports = {
     url.searchParams.append('signupId', signupDoc.id);
 
     // Respond with Sign in button
-    const embed = new MessageEmbed().setTitle('Sign in to YouTube').setURL(url);
-    message.reply(embed);
+    const embed = new MessageEmbed()
+      .setColor('#ff0000')
+      .setTitle('Sign in to YouTube')
+      .setURL(url);
+
+    message.author.send(embed).catch(err => {
+      if (err.code === APIErrors.CANNOT_MESSAGE_USER) {
+        message.channel.send(embed);
+      } else throw err;
+    });
   },
 };
