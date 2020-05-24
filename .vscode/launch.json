@@ -8,8 +8,11 @@
       "type": "node",
       "runtimeVersion": "12.16.3",
       "request": "launch",
-      "name": "start",
-      "program": "${workspaceRoot}/src/index.js"
+      "name": "npm dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run-script", "dev"],
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",
