@@ -105,7 +105,7 @@ router.get('/callback', async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    return res.status(err.code || 500).send(err.message);
+    return res.status(err.code || 500).send('Unexpected error');
   }
 });
 
