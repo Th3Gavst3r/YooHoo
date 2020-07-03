@@ -51,6 +51,7 @@ client.on('message', async message => {
           registrations
         )}`
       );
+      if (registrations.length === 0) return;
 
       const promises = [];
       videoIds.forEach(videoId => {
