@@ -2,7 +2,7 @@ const db = require('./db');
 const { decrypt } = require('./crypto');
 const Discord = require('discord.js');
 const { token } = require('./config').discord;
-const { errorReaction } = require('./util');
+const { errorReaction, processedReaction } = require('./util');
 const fs = require('fs');
 const googleUtils = require('./google-utils');
 const { prefix } = require('./config');
@@ -73,7 +73,7 @@ client.on('message', async message => {
         });
       });
 
-      Promise.all(promises).then(() => message.react('▶️')); // to use a custom emoji, bot must be member of guild that owns it
+      Promise.all(promises).then(() => processedReaction(message)); // to use a custom emoji, bot must be member of guild that owns it
     }
   }
 });
