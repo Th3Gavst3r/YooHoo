@@ -1,5 +1,5 @@
-var urls = [
-  '//www.youtube-nocookie.com/embed/up_lNV-yoK4?rel=0',
+const urls = [
+  'http://www.youtube-nocookie.com/embed/up_lNV-yoK4?rel=0',
   'http://www.youtube.com/user/Scobleizer#p/u/1/1p3vcRhsYGo',
   'http://www.youtube.com/watch?v=cKZDdG9FTKY&feature=channel',
   'http://www.youtube.com/watch?v=yZ-K7nCVnBI&playnext_from=TL&videos=osPknwzXEas&feature=sub',
@@ -22,4 +22,14 @@ var urls = [
   'http://youtube.com/watch?v=dQw4w9WgXcQ&feature=youtube_gdata_player',
   'http://youtube.com/watch?vi=dQw4w9WgXcQ&feature=youtube_gdata_player',
   'http://youtu.be/dQw4w9WgXcQ?feature=youtube_gdata_player',
+];
+
+const notUrls = [
+  'http://youtube.com/',
+  'http://youtu.be',
+  'https://youtube.com',
+  'http://www.youtube.com/',
+  'http://www.youtube.com',
+  'https://cdn.discordapp.com/emojis/713513453612171354.png?v=1',
+  'https://www.twitch.tv/videos/696369290',
 ];
