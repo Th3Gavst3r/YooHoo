@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 
 function parseVideoIds(text) {
   // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-  const youtubeIdRegex = /(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([\w\$\-+]*)/g;
+  const youtubeIdRegex = /(?:https?:\/\/(?:www\.)?(?:youtube(?:-nocookie)?\.com|youtu\.be))(?:\S*)(?:(?:\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([\w\$\-+]+)/g;
 
   const ids = [];
   while ((match = youtubeIdRegex.exec(text))) {
