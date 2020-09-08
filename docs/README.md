@@ -10,12 +10,12 @@
 
 ## Commands
 
-| **Command**                           | **Description**                                    |
-| ------------------------------------- | -------------------------------------------------- |
-| **`yh help`**                         | Get help with bot commands                         |
-| **`yh invite`**                       | Get a link to invite YooHoo to your server         |
-| **`yh register (all) <playlist id>`** | Save videos from the current channel to a playlist |
-| **`yh deregister <playlist id>`**     | Stop saving videos from the current channel        |
+| **Command**                                  | **Description**                                    |
+| -------------------------------------------- | -------------------------------------------------- |
+| **`yh help`**                                | Get help with bot commands                         |
+| **`yh invite`**                              | Get a link to invite YooHoo to your server         |
+| **`yh register (all) <playlist url or id>`** | Save videos from the current channel to a playlist |
+| **`yh deregister <playlist id>`**            | Stop saving videos from the current channel        |
 
 ## Contributing
 

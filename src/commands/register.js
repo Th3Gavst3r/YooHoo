@@ -4,19 +4,20 @@ const { appUrl } = require('../config');
 const db = require('../db');
 const { errorReaction } = require('../util');
 const firebaseAdmin = require('firebase-admin');
+const { parsePlaylistId } = require('../youtube');
 
 module.exports = {
   name: 'register',
   description: `Register a playlist with the current channel`,
   aliases: ['r'],
-  usage: '[options] [playlist id]',
+  usage: '[options] [playlist url or id]',
   options: [
     { name: 'all', description: 'Include videos from past chat history' },
   ],
   async execute(message, args) {
     if (!args.length) return errorReaction(message);
 
-    const playlist = args.slice(-1)[0];
+    const playlist = parsePlaylistId(args.slice(-1)[0]);
     const all = args.includes('all');
     if (!playlist) return errorReaction(message);
 

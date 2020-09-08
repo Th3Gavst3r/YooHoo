@@ -2,13 +2,20 @@ const { google } = require('googleapis');
 
 function parseVideoIds(text) {
   // https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-  const youtubeIdRegex = /(?:https?:\/\/(?:www\.)?(?:youtube(?:-nocookie)?\.com|youtu\.be))(?:\S*)(?:(?:\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([\w\$\-+]+)/g;
+  const youtubeVideoIdRegex = /(?:https?:\/\/(?:www\.)?(?:youtube(?:-nocookie)?\.com|youtu\.be))(?:\S*)(?:(?:\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([\w\$\-+]+)/g;
 
   const ids = [];
-  while ((match = youtubeIdRegex.exec(text))) {
+  while ((match = youtubeVideoIdRegex.exec(text))) {
     ids.push(match[1]);
   }
   return ids;
+}
+
+function parsePlaylistId(text) {
+  const youtubePlaylistIdRegex = /(?:.*youtube\.com\/playlist\?list=)?(.*)/;
+
+  const match = youtubePlaylistIdRegex.exec(text);
+  return match[1];
 }
 
 async function insertVideo(videoId, playlistId, auth, position) {
@@ -94,9 +101,10 @@ async function doesPlaylistContainVideo(playlistId, videoId, auth) {
 }
 
 module.exports = {
+  parseVideoIds,
+  parsePlaylistId,
   insertVideo,
   listUserPlaylists,
   doesPlaylistExist,
   doesPlaylistContainVideo,
-  parseVideoIds,
 };
