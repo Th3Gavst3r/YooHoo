@@ -48,7 +48,7 @@ module.exports = {
     console.log(`Sending signup url: ${url}`);
     message.author.send(embed).catch(err => {
       if (err.code === APIErrors.CANNOT_MESSAGE_USER) {
-        message.channel.send(embed);
+        message.reply(embed);
       } else throw err;
     });
   },

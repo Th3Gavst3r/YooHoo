@@ -70,15 +70,19 @@ router.get('/callback', async (req, res) => {
     );
     if (!playlistExists) {
       console.log(
-        `User ${signup.user.id} registered nonexitent playlist: ${signup.playlist.id}`
+        `User ${signup.author.id} registered nonexitent playlist: ${signup.playlist.id}`
       );
-      return res.status(404).send(`Playlist ${signup.playlist.id} not found`);
+      return res.status(404).send(
+        `Playlist <a href="https://www.youtube.com/playlist?list=${signup.playlist.id}">https://www.youtube.com/playlist?list=${signup.playlist.id}</a> not found.
+          <br><br>
+          If this playlist exists and is Private, ensure you are logging in with the correct YouTube account.`
+      );
     }
 
     // Check if user is authorized to edit this playlist
     const playlists = await youtube.listUserPlaylists(auth);
-    const isOwner = playlists.map(p => p.id).includes(signup.playlist.id);
-    if (!isOwner) {
+    const playlist = playlists.find(p => p.id === signup.playlist.id);
+    if (!playlist) {
       console.log(
         `User ${signup.author.tag} does not own playlist ${signup.playlist.id}`
       );
