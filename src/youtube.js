@@ -58,7 +58,7 @@ async function listUserPlaylists(auth) {
   let res = undefined;
   do {
     res = await youtube.playlists.list({
-      part: 'id',
+      part: 'snippet',
       mine: true,
       maxResults: 50,
       pageToken: res && res.data.nextPageToken,

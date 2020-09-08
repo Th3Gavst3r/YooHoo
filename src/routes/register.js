@@ -95,7 +95,7 @@ router.get('/callback', async (req, res) => {
       channel: signup.channel,
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
       credentials: encrypt(JSON.stringify(auth.credentials)),
-      playlist: signup.playlist,
+      playlist: playlist,
     };
     await db.addRegistration(registration);
 
