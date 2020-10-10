@@ -49,7 +49,7 @@ module.exports = {
       const embed = new MessageEmbed()
         .setColor('#ff0000')
         .setDescription(
-          `You do not have a registration for that [playlist](https://www.youtube.com/playlist?list=${playlist}) in this channel.`
+          `You do not have a registration for that playlist in this channel.`
         );
       return message.reply(embed);
     } else {
@@ -65,7 +65,7 @@ module.exports = {
       const embed = new MessageEmbed()
         .setColor('#ff0000')
         .setDescription(
-          `Videos ${location} will no longer be saved to your [playlist](https://www.youtube.com/playlist?list=${playlist}).`
+          `Videos ${location} will no longer be saved to your playlist.`
         );
       message.author.send(embed).catch(err => {
         if (err.code === APIErrors.CANNOT_MESSAGE_USER) {
