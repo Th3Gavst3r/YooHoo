@@ -1,7 +1,7 @@
 const { APIErrors } = require('discord.js').Constants;
 const db = require('../db');
 const { MessageEmbed } = require('discord.js');
-const { errorReaction } = require('../util');
+const { parsePlaylistId } = require('../youtube');
 
 module.exports = {
   name: 'deregister',
@@ -9,9 +9,24 @@ module.exports = {
   aliases: ['d'],
   usage: '[playlist id]',
   async execute(message, args) {
-    if (!args.length) return errorReaction(message);
+    if (!args.length) {
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setDescription(
+          `Please include a playlist URL or ID.\`\`\`${prefix} ${module.exports.name} yourPlaylist\`\`\``
+        );
+      return message.reply(embed);
+    }
 
-    const playlist = args.slice(-1)[0];
+    const playlist = parsePlaylistId(args.slice(-1)[0]);
+    if (!playlist.startsWith('PL')) {
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setDescription(
+          `Invalid playlist ID: \`${playlist}\`\nPlease provide a URL or ID for your YouTube playlist.`
+        );
+      return message.reply(embed);
+    }
 
     console.log(
       `Deregistration initiated by ${message.author.tag} (${message.author.id}). Channel: ${message.channel.id} Playlist: ${playlist}`

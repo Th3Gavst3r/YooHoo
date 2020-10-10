@@ -2,9 +2,9 @@ const { APIErrors } = require('discord.js').Constants;
 const { MessageEmbed } = require('discord.js');
 const { appUrl } = require('../config');
 const db = require('../db');
-const { errorReaction } = require('../util');
 const firebaseAdmin = require('firebase-admin');
 const { parsePlaylistId } = require('../youtube');
+const { prefix } = require('../config');
 
 module.exports = {
   name: 'register',
@@ -15,11 +15,25 @@ module.exports = {
     { name: 'all', description: 'Include videos from past chat history' },
   ],
   async execute(message, args) {
-    if (!args.length) return errorReaction(message);
+    if (!args.length) {
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setDescription(
+          `Please include a playlist URL or ID.\`\`\`${prefix} ${module.exports.name} yourPlaylist\`\`\``
+        );
+      return message.reply(embed);
+    }
 
-    const playlist = parsePlaylistId(args.slice(-1)[0]);
     const all = args.includes('all');
-    if (!playlist) return errorReaction(message);
+    const playlist = parsePlaylistId(args.slice(-1)[0]);
+    if (!playlist.startsWith('PL')) {
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setDescription(
+          `Invalid playlist ID: \`${playlist}\`\nPlease provide a URL or ID for your YouTube playlist.`
+        );
+      return message.reply(embed);
+    }
 
     console.log(
       `Registration initiated by ${message.author.tag} (${message.author.id}). Channel: ${message.channel.id} Playlist: ${playlist}`
