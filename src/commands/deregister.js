@@ -45,7 +45,13 @@ module.exports = {
       console.log(
         `No registration found for user: ${message.author.tag} (${message.author.id}) channel: ${message.channel.id} playlist: ${playlist}`
       );
-      return;
+
+      const embed = new MessageEmbed()
+        .setColor('#ff0000')
+        .setDescription(
+          `You do not have a registration for that [playlist](https://www.youtube.com/playlist?list=${playlist}) in this channel.`
+        );
+      return message.reply(embed);
     } else {
       const registration = snapshot.docs[0];
       console.log(`Deleting registration: ${registration.id}`);
