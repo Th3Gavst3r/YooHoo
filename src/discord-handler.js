@@ -80,8 +80,14 @@ client.on('message', async message => {
 });
 
 function executeCommand(message) {
+  console.log(
+    `User ${message.author.tag} (${message.author.id}) invoked YooHoo with: ${message.content}`
+  );
+
   // Parse which command we received
   const args = message.content.split(/ +/).slice(1);
+  if (!args.length) return errorReaction(message);
+
   const commandName = args.shift().toLowerCase();
   const command =
     client.commands.get(commandName) ||
