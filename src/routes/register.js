@@ -70,7 +70,7 @@ router.get('/callback', async (req, res) => {
     );
     if (!playlistExists) {
       console.log(
-        `User ${signup.author.id} registered nonexitent playlist: ${signup.playlist.id}`
+        `User ${message.author.tag} (${message.author.id}) registered nonexitent playlist: ${signup.playlist.id}`
       );
       return res.status(404).send(
         `Playlist <a href="https://www.youtube.com/playlist?list=${signup.playlist.id}">https://www.youtube.com/playlist?list=${signup.playlist.id}</a> not found.
