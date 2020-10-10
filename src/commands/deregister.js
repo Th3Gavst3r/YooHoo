@@ -67,11 +67,7 @@ module.exports = {
         .setDescription(
           `Videos ${location} will no longer be saved to your playlist.`
         );
-      message.author.send(embed).catch(err => {
-        if (err.code === APIErrors.CANNOT_MESSAGE_USER) {
-          message.channel.send(embed);
-        } else throw err;
-      });
+      return message.reply(embed);
     }
   },
 };
