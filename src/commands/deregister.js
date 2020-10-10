@@ -2,6 +2,7 @@ const { APIErrors } = require('discord.js').Constants;
 const db = require('../db');
 const { MessageEmbed } = require('discord.js');
 const { parsePlaylistId } = require('../youtube');
+const { prefix } = require('../config');
 
 module.exports = {
   name: 'deregister',
