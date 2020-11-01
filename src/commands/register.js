@@ -43,6 +43,7 @@ module.exports = {
       author: JSON.parse(JSON.stringify(message.author)),
       channel: JSON.parse(JSON.stringify(message.channel)),
       created: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
+      guild: JSON.parse(JSON.stringify(message.guild)),
       playlist: {
         id: playlist,
       },
